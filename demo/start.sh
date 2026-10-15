@@ -42,7 +42,10 @@ Y
 printf 'apiVersion: 1\napps:\n  - { type: grafana-exploretraces-app, jsonData: {} }\n' > "$R/prov/plugins/app.yaml"
 ln -sfn "$REPO/dist" "$R/plugins/grafana-exploretraces-app"
 if ! curl -sf http://127.0.0.1:3210/ready >/dev/null 2>&1; then
-  (cd "$DEMO_HOME/data" && nohup "$DEMO_HOME/bin/tempo" -config.file="$R/tempo.yaml" > "$DEMO_HOME/logs/tempo.log" 2>&1 < /dev/null & echo $! > "$R/tempo.pid")
+  # exec, so the subshell becomes Tempo: a leftover shell here would hold this script's
+  # stdout open for the lifetime of Tempo and hang any `demo/start.sh | …` pipeline.
+  (cd "$DEMO_HOME/data" && exec nohup "$DEMO_HOME/bin/tempo" -config.file="$R/tempo.yaml" > "$DEMO_HOME/logs/tempo.log" 2>&1 < /dev/null) &
+  echo $! > "$R/tempo.pid"
   for _ in $(seq 90); do curl -sf http://127.0.0.1:3210/ready >/dev/null 2>&1 && break; sleep 1; done
 fi
 # Without this, seed_tempo.py spends ~25 min retrying against a Tempo that never came up.
