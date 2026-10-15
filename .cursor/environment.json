@@ -1,0 +1,9 @@
+{
+  // Cloud Agent env for the traces-drilldown breakdown-header repro (Tempo 2.8.2 + Grafana 12.3.0). No Docker needed.
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start.sh",
+  "terminals": [
+    { "name": "stack logs", "command": "tail -F $HOME/.cache/traces-drilldown-demo/logs/grafana.stdout $HOME/.cache/traces-drilldown-demo/logs/tempo.log", "description": "Grafana :3330 + Tempo :3210 (OTLP :4328); check: demo/repro-check.sh" }
+  ],
+  "ports": [ { "port": 3330, "name": "Grafana" }, { "port": 3210, "name": "Tempo" }, { "port": 4328, "name": "Tempo OTLP/HTTP" } ]
+}
