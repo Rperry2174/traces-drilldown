@@ -2,12 +2,12 @@
 # Cloud Agent install step (runs once per Build, from the repo root).
 # Node 22 + corepack/pnpm, deps, plugin build, Grafana + backend binaries, Playwright Chromium.
 set -euo pipefail
-export DEMO_HOME="${DEMO_HOME:-$HOME/.cache/drilldown-demo}"
+export DEMO_HOME="${DEMO_HOME:-$HOME/.cache/traces-drilldown-demo}"
 if ! node -v 2>/dev/null | grep -q '^v22'; then
   arch=$(uname -m); case "$arch" in x86_64) arch=x64;; aarch64) arch=arm64;; esac
   mkdir -p "$HOME/.local/node22"
-  curl -fsSL "https://nodejs.org/dist/latest-v22.x/" | grep -o "node-v22[0-9.]*-linux-$arch.tar.xz" | head -1 \
-    | xargs -I{} curl -fsSL "https://nodejs.org/dist/latest-v22.x/{}" | tar xJ -C "$HOME/.local/node22" --strip-components=1
+  curl -fsSL --connect-timeout 15 --max-time 60 "https://nodejs.org/dist/latest-v22.x/" | grep -o "node-v22[0-9.]*-linux-$arch.tar.xz" | head -1 \
+    | xargs -I{} curl -fsSL --connect-timeout 15 --max-time 300 "https://nodejs.org/dist/latest-v22.x/{}" | tar xJ -C "$HOME/.local/node22" --strip-components=1
   export PATH="$HOME/.local/node22/bin:$PATH"
   grep -q node22 "$HOME/.bashrc" 2>/dev/null || echo 'export PATH="$HOME/.local/node22/bin:$PATH"' >> "$HOME/.bashrc"
 fi
