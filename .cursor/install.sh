@@ -2,7 +2,8 @@
 # Cloud Agent install step (runs once per Build, from the repo root).
 # Node 22 + corepack/pnpm, deps, plugin build, Grafana + backend binaries, Playwright Chromium.
 set -euo pipefail
-export DEMO_HOME="${DEMO_HOME:-$HOME/.cache/traces-drilldown-demo}"
+# No DEMO_HOME default here: demo/start.sh owns it, and a second default silently
+# downloads Grafana + Tempo to a directory the start step never reads.
 if ! node -v 2>/dev/null | grep -q '^v22'; then
   arch=$(uname -m); case "$arch" in x86_64) arch=x64;; aarch64) arch=arm64;; esac
   mkdir -p "$HOME/.local/node22"
