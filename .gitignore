@@ -50,3 +50,5 @@ docs/superpowers/
 playwright-report/
 playwright/
 test-results/
+
+demo/*.png
