@@ -45,6 +45,8 @@ if ! curl -sf http://127.0.0.1:3210/ready >/dev/null 2>&1; then
   (cd "$DEMO_HOME/data" && nohup "$DEMO_HOME/bin/tempo" -config.file="$R/tempo.yaml" > "$DEMO_HOME/logs/tempo.log" 2>&1 < /dev/null & echo $! > "$R/tempo.pid")
   for _ in $(seq 90); do curl -sf http://127.0.0.1:3210/ready >/dev/null 2>&1 && break; sleep 1; done
 fi
+# Without this, seed_tempo.py spends ~25 min retrying against a Tempo that never came up.
+curl -sf http://127.0.0.1:3210/ready >/dev/null 2>&1 || { echo "Tempo not ready; see $DEMO_HOME/logs/tempo.log" >&2; exit 1; }
 python3 "$REPO/demo/seed_tempo.py" || echo "seed failed (see above)"
 if ! curl -sf "http://127.0.0.1:$GRAFANA_PORT/api/health" >/dev/null 2>&1; then
   G="$DEMO_HOME/bin/grafana-$GF_VER"
@@ -55,4 +57,5 @@ if ! curl -sf "http://127.0.0.1:$GRAFANA_PORT/api/health" >/dev/null 2>&1; then
   nohup "$G/bin/grafana" server --homepath "$G" > "$DEMO_HOME/logs/grafana.stdout" 2>&1 < /dev/null & echo $! > "$R/grafana.pid"
   for _ in $(seq 90); do curl -sf "http://127.0.0.1:$GRAFANA_PORT/api/health" >/dev/null 2>&1 && break; sleep 1; done
 fi
+curl -sf "http://127.0.0.1:$GRAFANA_PORT/api/health" >/dev/null 2>&1 || { echo "Grafana not ready; see $DEMO_HOME/logs/grafana.stdout" >&2; exit 1; }
 echo "up: Grafana :$GRAFANA_PORT, Tempo :3210 (OTLP/HTTP :4328)"
