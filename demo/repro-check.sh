@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # repro check for the traces-drilldown breakdown-header bug (upstream fix PR #873).
-# Re-seeds Tempo (1h window), then exits 1 while the bug exists (expected on demo-base), 0 once fixed.
+# Re-seeds Tempo (1h window), then exits 1 while the bug exists (expected on main), 0 once fixed.
 set -uo pipefail
 cd "$(dirname "$0")"
 python3 seed_tempo.py >/dev/null || echo "warning: re-seed failed"
