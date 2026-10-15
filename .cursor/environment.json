@@ -1,5 +1,5 @@
 {
-  // Cloud Agent env for the traces-drilldown breakdown-header repro (Tempo 2.8.2 + Grafana 12.3.0). No Docker needed.
+  // Cloud Agent env for the traces-drilldown breakdown-header repro (Tempo 2.8.2 + Grafana 13.2.4). No Docker needed.
   "install": "bash .cursor/install.sh",
   "start": "bash .cursor/start.sh",
   "terminals": [

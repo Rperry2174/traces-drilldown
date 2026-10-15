@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Local repro stack for the traces-drilldown breakdown-header bug (fixed upstream by PR #873), no Docker.
-#   Tempo 2.8.2 (HTTP :3210, OTLP/HTTP :4328) + Grafana Enterprise 12.3.0 :3330 with ./dist mounted + demo/seed_tempo.py.
+#   Tempo 2.8.2 (HTTP :3210, OTLP/HTTP :4328) + Grafana Enterprise 13.2.4 :3330 with ./dist mounted + demo/seed_tempo.py.
 #   demo/start.sh [--build]     demo/stop.sh [--wipe]
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 DEMO_HOME="${DEMO_HOME:-$HOME/.cache/traces-drilldown-demo}"
-GF_VER=12.3.0; TEMPO_VER=2.8.2; GRAFANA_PORT=3330
+GF_VER="${GF_VER:-13.2.4}"; TEMPO_VER=2.8.2; GRAFANA_PORT=3330
 mkdir -p "$DEMO_HOME"/{bin,run/plugins,run/prov/datasources,run/prov/plugins,logs,data}
 os=$(uname -s | tr '[:upper:]' '[:lower:]'); arch=$(uname -m)
 case "$arch" in x86_64|amd64) arch=amd64 ;; arm64|aarch64) arch=arm64 ;; esac
